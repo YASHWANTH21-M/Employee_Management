@@ -3,6 +3,7 @@ package com.example.employeemanagement.serviceImpltest;
 import com.example.employeemanagement.dto.EmployeeRequest;
 import com.example.employeemanagement.dto.EmployeeResponse;
 import com.example.employeemanagement.entity.Employee;
+import com.example.employeemanagement.exception.DuplicateEmailException;
 import com.example.employeemanagement.exception.EmployeeNotFoundException;
 import com.example.employeemanagement.repository.EmployeeRepository;
 import com.example.employeemanagement.service.EmployeeServiceImpl;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.DuplicateFormatFlagsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,7 +92,7 @@ class EmployeeServiceImplTest {
                 .thenReturn(true);
 
         assertThrows(
-                IllegalArgumentException.class,
+                DuplicateEmailException.class,
                 () -> employeeService.createEmployee(request)
         );
 
@@ -207,7 +209,7 @@ class EmployeeServiceImplTest {
                 .thenReturn(true);
 
         assertThrows(
-                IllegalArgumentException.class,
+                DuplicateEmailException.class,
                 () -> employeeService.updateEmployee(1L, updateRequest)
         );
 

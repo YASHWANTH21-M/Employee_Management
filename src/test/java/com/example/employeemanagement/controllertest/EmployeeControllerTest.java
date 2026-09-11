@@ -73,7 +73,7 @@ class EmployeeControllerTest {
                 .thenReturn(getResponse());
 
         mockMvc.perform(
-                post("/api/employees")
+                post("/api/v1/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(getRequest()))
         )
@@ -94,7 +94,7 @@ class EmployeeControllerTest {
                 .thenReturn(List.of(getResponse()));
 
         mockMvc.perform(
-                get("/api/employees")
+                get("/api/v1/employees")
         )
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(1))
@@ -110,7 +110,7 @@ class EmployeeControllerTest {
                 .thenReturn(getResponse());
 
         mockMvc.perform(
-                get("/api/employees/1")
+                get("/api/v1/employees/1")
         )
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(1))
@@ -128,7 +128,7 @@ class EmployeeControllerTest {
                 );
 
         mockMvc.perform(
-                get("/api/employees/999")
+                get("/api/v1/employees/999")
         )
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status").value(404))
@@ -144,7 +144,7 @@ class EmployeeControllerTest {
         )).thenReturn(getResponse());
 
         mockMvc.perform(
-                put("/api/employees/1")
+                put("/api/v1/employees/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(getRequest()))
         )
@@ -162,7 +162,7 @@ class EmployeeControllerTest {
                 .deleteEmployee(1L);
 
         mockMvc.perform(
-                delete("/api/employees/1")
+                delete("/api/v1/employees/1")
         )
         .andExpect(status().isNoContent());
 
@@ -186,7 +186,7 @@ class EmployeeControllerTest {
         );
 
         mockMvc.perform(
-                post("/api/employees")
+                post("/api/v1/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 objectMapper.writeValueAsString(invalidRequest)

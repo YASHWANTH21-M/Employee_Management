@@ -3,15 +3,19 @@ package com.example.employeemanagement.service;
 import com.example.employeemanagement.dto.EmployeeRequest;
 import com.example.employeemanagement.dto.EmployeeResponse;
 import com.example.employeemanagement.entity.Employee;
+import com.example.employeemanagement.exception.DuplicateEmailException;
 import com.example.employeemanagement.exception.EmployeeNotFoundException;
 import com.example.employeemanagement.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
@@ -19,8 +23,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponse createEmployee(EmployeeRequest request) {
 
+    	log.info("Creating employee with email: {}", request.email());
         if (employeeRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException(
+        	log.warn("Duplicate email detected: {}", request.email());
+            throw new DuplicateEmailException(
                     "Employee already exists with email: " + request.email()
             );
         }
@@ -55,7 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employee.getEmail().equals(request.email())
                 && employeeRepository.existsByEmail(request.email())) {
 
-            throw new IllegalArgumentException(
+            throw new DuplicateEmailException(
                     "Email already exists: " + request.email()
             );
         }
@@ -85,19 +91,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponse getEmployeeById(Long id) {
+    	log.info("Fetching employee with id: {}", id);
 
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() ->
-                        new EmployeeNotFoundException(
-                                "Employee not found with id: " + id
-                        ));
-
-        return mapToResponse(employee);
+    	return employeeRepository.findById(id)
+    	        .map(this::mapToResponse)
+    	        .orElseThrow(() -> {
+    	            log.warn("Employee not found with id: {}", id);
+    	            return new EmployeeNotFoundException(
+    	                    "Employee not found with id: " + id
+    	            );
+    	        });
     }
 
     @Override
     public void deleteEmployee(Long id) {
-
+    	log.info("Deleting employee with id: {}", id);
         if (!employeeRepository.existsById(id)) {
             throw new EmployeeNotFoundException(
                     "Employee not found with id: " + id
