@@ -5,9 +5,12 @@ import com.example.employeemanagement.dto.EmployeeRequest;
 import com.example.employeemanagement.dto.EmployeeResponse;
 import com.example.employeemanagement.exception.EmployeeNotFoundException;
 import com.example.employeemanagement.exception.GlobalExceptionHandler;
+import com.example.employeemanagement.security.JwtService;
 import com.example.employeemanagement.service.EmployeeService;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -25,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(EmployeeController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(GlobalExceptionHandler.class)
 class EmployeeControllerTest {
 
@@ -36,6 +40,10 @@ class EmployeeControllerTest {
 
     @MockitoBean
     private EmployeeService employeeService;
+
+    // ADDED: Mock JWT service for WebMvcTest
+    @MockitoBean
+    private JwtService jwtService;
 
     private EmployeeRequest getRequest() {
 
