@@ -35,13 +35,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         // If no Bearer token is present, skip JWT processing
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.toLowerCase().startsWith("bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            final String jwt = authHeader.substring(7); // Strip "Bearer "
+            // Strip the 7 characters of "Bearer " (case-insensitive)
+            String jwt = authHeader.substring(7);
+            
+            // Just in case the user accidentally included < and > around the token
+            if (jwt.startsWith("<") && jwt.endsWith(">")) {
+                jwt = jwt.substring(1, jwt.length() - 1);
+            }
+
             final String username = jwtService.extractUsername(jwt);
 
             // Only authenticate if not already authenticated

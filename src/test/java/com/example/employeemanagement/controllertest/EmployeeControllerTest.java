@@ -8,7 +8,7 @@ import com.example.employeemanagement.exception.GlobalExceptionHandler;
 import com.example.employeemanagement.service.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -32,7 +32,7 @@ class EmployeeControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private tools.jackson.databind.ObjectMapper objectMapper;
+    private com.fasterxml.jackson.databind.ObjectMapper objectMapper;
 
     @MockitoBean
     private EmployeeService employeeService;
