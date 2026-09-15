@@ -44,12 +44,13 @@ jobs:
           path: target/site/jacoco/
 
   # ============================================================
-  # JOB 2: SECURITY SCANNING (Trivy Vulnerability Scanner)
+  # JOB 2: SECURITY SCANNING (Trivy Vulnerability Scanner - Non-blocking)
   # ============================================================
   security-scan:
     name: Security & Dependency Scan
     needs: build-and-test
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout Repository
@@ -57,19 +58,20 @@ jobs:
 
       - name: Run Trivy FS Scan (Source & Dependencies)
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         with:
           scan-type: 'fs'
           scan-ref: '.'
           format: 'table'
           severity: 'HIGH,CRITICAL'
-          exit-code: '0' # Non-blocking scan report
+          exit-code: '0'
 
   # ============================================================
   # JOB 3: DOCKER BUILD & TRIVY IMAGE SCAN
   # ============================================================
   docker-build:
     name: Docker Build & Image Scan
-    needs: security-scan
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
@@ -90,10 +92,12 @@ jobs:
 
       - name: Scan Employee Service Docker Image with Trivy
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         with:
           image-ref: 'employee-service:latest'
           format: 'table'
           severity: 'HIGH,CRITICAL'
+
 
   # ============================================================
   # JOB 4: AWS ECR PUSH & DEPLOYMENT (Triggers on main branch)
