@@ -96,12 +96,12 @@ jobs:
           severity: 'HIGH,CRITICAL'
 
   # ============================================================
-  # JOB 4: AWS ECR PUSH & DEPLOYMENT (Triggers on main branch)
+  # JOB 4: AWS ECR PUSH & DEPLOYMENT (Runs only if AWS secret exists)
   # ============================================================
   deploy-to-aws:
     name: Push to Amazon ECR & Deploy to AWS
     needs: docker-build
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && secrets.AWS_ACCESS_KEY_ID != ''
     runs-on: ubuntu-latest
 
     steps:
@@ -144,14 +144,14 @@ jobs:
   # ============================================================
   deployment-validation:
     name: Deployment Health Check Validation
-    needs: deploy-to-aws
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    needs: docker-build
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && secrets.AWS_DEPLOYED_HOST != ''
     runs-on: ubuntu-latest
 
     steps:
       - name: Verify Application Endpoint Health
         run: |
           echo "Validating deployed application health..."
-          # Replace DEPLOYED_HOST with your AWS EC2 Public IP / ECS Load Balancer URL stored in secrets
-          # curl --fail --connect-timeout 10 http://${{ secrets.AWS_DEPLOYED_HOST }}:8085/actuator/health || exit 1
-          echo "Deployment validation step completed."
+          curl --fail --connect-timeout 10 http://${{ secrets.AWS_DEPLOYED_HOST }}:8085/actuator/health || exit 1
+          echo "Deployment validation step completed successfully."
+
