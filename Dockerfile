@@ -1,26 +1,22 @@
 # ============================================================
 # Stage 1: BUILD — Compile the application using Maven
 # ============================================================
-FROM eclipse-temurin:17-jdk-alpine AS builder
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS builder
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first (for dependency caching)
-COPY mvnw .
-COPY .mvn .mvn
+# Copy pom.xml first (for dependency caching)
 COPY pom.xml .
 
-# Make Maven wrapper executable
-RUN chmod +x mvnw
-
-# Download dependencies (cached unless pom.xml changes)
-RUN ./mvnw dependency:go-offline -B
+# Download dependencies (cached layer)
+RUN mvn dependency:go-offline -B || true
 
 # Copy source code
 COPY src src
 
 # Build the application (skip tests — they run in CI/CD pipeline)
-RUN ./mvnw clean package -DskipTests -B
+RUN mvn clean package -DskipTests -B
+
 
 # ============================================================
 # Stage 2: RUN — Lightweight runtime image
