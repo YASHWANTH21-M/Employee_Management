@@ -1,0 +1,24 @@
+server:
+  port: 8085
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://employee-service:8080
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - RateLimiterFilter
+
+        - id: employee-service
+          uri: http://employee-service:8080
+          predicates:
+            - Path=/api/v1/employees/**
+          filters:
+            - JwtAuthenticationFilter
+            - RateLimiterFilter

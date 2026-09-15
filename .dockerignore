@@ -1,0 +1,11 @@
+.git
+.gitignore
+.mvn
+target/
+*.md
+.classpath
+.project
+.settings
+.factorypath
+screenshots/
+data/
