@@ -27,3 +27,10 @@ spring:
 
 jwt:
   secret: bXlTdXBlclNlY3JldEtleUZvckpXVEF1dGhlbnRpY2F0aW9uMTIzNDU2Nzg=
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
