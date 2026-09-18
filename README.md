@@ -101,34 +101,7 @@ Make sure you have the following installed locally:
 
 To launch the complete infrastructure (Config Server, Employee Service, and API Gateway) with full healthchecks:
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/Employee_Management.git
-   cd Employee_Management
-   ```
-
-2. **Spin up containers**:
-   ```bash
-   docker-compose up --build -d
-   ```
-
-3. **Verify running containers**:
-   ```bash
-   docker-compose ps
-   ```
-
-   - **API Gateway**: `http://localhost:8085`
-   - **Employee Service**: `http://localhost:8080`
-   - **Config Server**: `http://localhost:8888`
-
-4. **Stop containers**:
-   ```bash
-   docker-compose down
-   ```
-
----
-
-### Option 2: Running Locally via Maven
+ Running Locally via Maven
 
 1. **Start the Config Server**:
    ```bash
